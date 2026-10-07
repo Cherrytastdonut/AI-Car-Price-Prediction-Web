@@ -3,62 +3,180 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CarPrice AI</title>
+  <meta name="description" content="실제 중고차 데이터로 학습한 머신러닝 기반 중고차 가격 예측 서비스" />
+  <title>CarPrice AI | 중고차 가격 예측</title>
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <h1>CarPrice AI</h1>
-      <p>AI 중고차 가격 예측</p>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="CarPrice AI 홈">
+        <span class="brand-icon">🚘</span>
+        <span><strong>CarPrice AI</strong><small>AI 중고차 가격 예측</small></span>
+      </a>
+      <nav>
+        <a href="#top">홈</a>
+        <a class="active" href="#predict">가격 예측</a>
+        <a href="#history-section">예측 기록</a>
+        <a href="#model-section">모델 정보</a>
+      </nav>
     </div>
   </header>
 
-  <main class="layout">
-    <section class="card">
-      <h2>중고차 정보 입력</h2>
-      <div class="grid">
-        <label>차량 연식<input id="year" type="number" value="2020"></label>
-        <label>주행거리 (km)<input id="km_driven" type="number" value="50000"></label>
-        <label>연료 종류
-          <select id="fuel">
-            <option>Petrol</option><option>Diesel</option><option>CNG</option><option>LPG</option>
-          </select>
-        </label>
-        <label>변속기
-          <select id="transmission">
-            <option>Manual</option><option>Automatic</option>
-          </select>
-        </label>
-        <label>엔진 (cc)<input id="engine" type="number" value="1498"></label>
-        <label>최대 출력 (bhp)<input id="max_power" type="number" value="110"></label>
-        <label>판매자 유형
-          <select id="seller_type">
-            <option>Individual</option><option>Dealer</option><option>Trustmark Dealer</option>
-          </select>
-        </label>
-        <label>소유 이력
-          <select id="owner">
-            <option>First Owner</option><option>Second Owner</option><option>Third Owner</option><option>Fourth & Above Owner</option>
-          </select>
-        </label>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">MACHINE LEARNING CAR VALUATION</span>
+        <h1>AI가 알려주는<br><span>내 차의 예상 가치</span></h1>
+        <p>실제 CarDekho 중고차 데이터를 학습한 머신러닝 모델이 차량 조건을 분석해 예상 판매가격을 계산합니다.</p>
+
+        <div class="hero-points">
+          <div><span>01</span><p><b>실제 데이터 기반</b><small>8,128개 원본 중고차 데이터 분석</small></p></div>
+          <div><span>02</span><p><b>직접 학습한 ML 모델</b><small>3개 회귀 모델을 비교해 최종 모델 선정</small></p></div>
+          <div><span>03</span><p><b>빠른 가격 예측</b><small>차량 정보를 입력하면 즉시 결과 확인</small></p></div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="road"></div>
+          <div class="car-shape">🚗</div>
+        </div>
       </div>
-      <button id="predictBtn">가격 예측하기</button>
-      <p id="status"></p>
-    </section>
 
-    <section class="card result-card">
-      <h2>예측 결과</h2>
-      <div class="price" id="price">-</div>
-      <p id="explanation">차량 정보를 입력하고 예측 버튼을 눌러주세요.</p>
-      <button id="saveBtn" disabled>예측 기록 저장</button>
-    </section>
+      <div class="workspace">
+        <section class="card input-card" id="predict">
+          <div class="card-title">
+            <span class="icon-box">⌕</span>
+            <div>
+              <h2>중고차 정보 입력</h2>
+              <p>차량 정보를 입력하면 학습된 모델이 예상 가격을 예측합니다.</p>
+            </div>
+          </div>
 
-    <section class="card">
-      <h2>최근 예측 기록</h2>
-      <div id="history">저장된 기록이 없습니다.</div>
+          <div class="form-grid">
+            <label>차량 연식 <em>*</em>
+              <div class="field"><input id="year" type="number" min="1990" max="2026" value="2020"><span>년</span></div>
+            </label>
+
+            <label>주행거리 <em>*</em>
+              <div class="field"><input id="km_driven" type="number" min="0" value="50000"><span>km</span></div>
+            </label>
+
+            <label>연료 종류 <em>*</em>
+              <select id="fuel">
+                <option value="Petrol">가솔린</option>
+                <option value="Diesel">디젤</option>
+                <option value="CNG">CNG</option>
+                <option value="LPG">LPG</option>
+              </select>
+            </label>
+
+            <label>변속기 <em>*</em>
+              <select id="transmission">
+                <option value="Manual">수동</option>
+                <option value="Automatic">자동</option>
+              </select>
+            </label>
+
+            <label>엔진 배기량 <em>*</em>
+              <div class="field"><input id="engine" type="number" min="0" value="1498"><span>cc</span></div>
+            </label>
+
+            <label>최대 출력 <em>*</em>
+              <div class="field"><input id="max_power" type="number" min="0" step="0.1" value="110"><span>bhp</span></div>
+            </label>
+
+            <label>판매자 유형 <em>*</em>
+              <select id="seller_type">
+                <option value="Individual">개인 판매자</option>
+                <option value="Dealer">딜러</option>
+                <option value="Trustmark Dealer">인증 딜러</option>
+              </select>
+            </label>
+
+            <label>소유 이력 <em>*</em>
+              <select id="owner">
+                <option value="First Owner">1인 소유</option>
+                <option value="Second Owner">2인 소유</option>
+                <option value="Third Owner">3인 소유</option>
+                <option value="Fourth & Above Owner">4인 이상 소유</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="primary-btn" id="predictBtn">
+            <span id="predictBtnText">가격 예측하기</span>
+            <span>→</span>
+          </button>
+          <p class="status" id="status" role="status"></p>
+        </section>
+
+        <aside class="card factors-card">
+          <div class="card-title compact">
+            <span class="icon-box">▥</span>
+            <div><h2>AI가 분석하는 주요 요인</h2></div>
+          </div>
+          <div class="factor-list">
+            <div><span>📅</span><p><b>연식</b><small>차량 연식에 따른 가치 변화</small></p></div>
+            <div><span>◉</span><p><b>주행거리</b><small>누적 주행거리와 가격 관계</small></p></div>
+            <div><span>⛽</span><p><b>연료 종류</b><small>연료별 시장 가격 차이</small></p></div>
+            <div><span>⚙</span><p><b>차량 제원</b><small>엔진 배기량과 최대 출력</small></p></div>
+            <div><span>👤</span><p><b>거래 조건</b><small>판매자 유형과 소유 이력</small></p></div>
+          </div>
+        </aside>
+
+        <section class="card result-card">
+          <div class="card-title compact">
+            <span class="icon-box">▥</span>
+            <div><h2>예측 결과</h2><p id="resultMeta">차량 정보를 입력해 주세요.</p></div>
+          </div>
+
+          <div class="result-body">
+            <div class="result-visual"><span>🚘</span></div>
+            <div class="result-data">
+              <span class="result-label">예상 중고차 판매가격</span>
+              <div class="price" id="price">-</div>
+              <div class="result-actions">
+                <button class="secondary-btn" id="saveBtn" disabled>예측 기록 저장</button>
+                <button class="ghost-btn" id="resetBtn">다시 입력</button>
+              </div>
+              <div class="explanation">
+                <strong>💡 AI 설명</strong>
+                <p id="explanation">가격 예측 후 차량 조건에 대한 설명을 확인할 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card history-card" id="history-section">
+          <div class="card-title compact">
+            <span class="icon-box">◷</span>
+            <div><h2>최근 예측 기록</h2><p>Supabase에 저장된 최근 기록</p></div>
+          </div>
+          <div id="history" class="history-list">저장된 기록이 없습니다.</div>
+        </section>
+
+        <section class="card model-card" id="model-section">
+          <div class="card-title compact">
+            <span class="icon-box">AI</span>
+            <div><h2>AI 모델 정보</h2><p>직접 학습하고 평가한 회귀 모델</p></div>
+          </div>
+
+          <div class="model-stats">
+            <div><small>최종 모델</small><strong>Random Forest</strong></div>
+            <div><small>Test R²</small><strong>0.9262</strong></div>
+            <div><small>Test MAE</small><strong>₹77,782</strong></div>
+            <div><small>학습 데이터</small><strong>6,926건</strong></div>
+          </div>
+          <p class="model-note">Linear Regression, Random Forest, Gradient Boosting을 같은 Train/Test 데이터에서 비교해 테스트 R²가 가장 높은 모델을 선정했습니다.</p>
+        </section>
+      </div>
     </section>
   </main>
+
+  <footer>
+    <p>CarPrice AI · 머신러닝 AI 웹앱 구현 프로젝트</p>
+    <p>예측값은 CarDekho 데이터 기반 참고용 결과이며 실제 거래가격과 다를 수 있습니다.</p>
+  </footer>
 
   <script src="/app.js"></script>
 </body>
