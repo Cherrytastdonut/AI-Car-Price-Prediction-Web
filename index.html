@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CarPrice AI</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>CarPrice AI</h1>
+      <p>AI 중고차 가격 예측</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>중고차 정보 입력</h2>
+      <div class="grid">
+        <label>차량 연식<input id="year" type="number" value="2020"></label>
+        <label>주행거리 (km)<input id="km_driven" type="number" value="50000"></label>
+        <label>연료 종류
+          <select id="fuel">
+            <option>Petrol</option><option>Diesel</option><option>CNG</option><option>LPG</option>
+          </select>
+        </label>
+        <label>변속기
+          <select id="transmission">
+            <option>Manual</option><option>Automatic</option>
+          </select>
+        </label>
+        <label>엔진 (cc)<input id="engine" type="number" value="1498"></label>
+        <label>최대 출력 (bhp)<input id="max_power" type="number" value="110"></label>
+        <label>판매자 유형
+          <select id="seller_type">
+            <option>Individual</option><option>Dealer</option><option>Trustmark Dealer</option>
+          </select>
+        </label>
+        <label>소유 이력
+          <select id="owner">
+            <option>First Owner</option><option>Second Owner</option><option>Third Owner</option><option>Fourth & Above Owner</option>
+          </select>
+        </label>
+      </div>
+      <button id="predictBtn">가격 예측하기</button>
+      <p id="status"></p>
+    </section>
+
+    <section class="card result-card">
+      <h2>예측 결과</h2>
+      <div class="price" id="price">-</div>
+      <p id="explanation">차량 정보를 입력하고 예측 버튼을 눌러주세요.</p>
+      <button id="saveBtn" disabled>예측 기록 저장</button>
+    </section>
+
+    <section class="card">
+      <h2>최근 예측 기록</h2>
+      <div id="history">저장된 기록이 없습니다.</div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
