@@ -1,0 +1,76 @@
+{
+  "dataset": {
+    "source_file": "Car details v3.csv",
+    "original_rows": 8128,
+    "rows_after_duplicate_removal": 6926,
+    "duplicates_removed": 1202,
+    "columns": [
+      "name",
+      "year",
+      "selling_price",
+      "km_driven",
+      "fuel",
+      "seller_type",
+      "transmission",
+      "owner",
+      "mileage",
+      "engine",
+      "max_power",
+      "torque",
+      "seats"
+    ],
+    "missing_before_preprocessing": {
+      "year": 0,
+      "km_driven": 0,
+      "fuel": 0,
+      "seller_type": 0,
+      "transmission": 0,
+      "owner": 0,
+      "engine": 221,
+      "max_power": 215,
+      "selling_price": 0
+    },
+    "target": "selling_price",
+    "features": [
+      "year",
+      "km_driven",
+      "fuel",
+      "seller_type",
+      "transmission",
+      "owner",
+      "engine",
+      "max_power"
+    ],
+    "selling_price": {
+      "min": 29999.0,
+      "median": 400000.0,
+      "mean": 517270.68,
+      "max": 10000000.0
+    }
+  },
+  "split": {
+    "train_rows": 5540,
+    "test_rows": 1386,
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "metrics": {
+    "Linear Regression": {
+      "MAE": 173274.23,
+      "RMSE": 308016.33,
+      "R2": 0.56742
+    },
+    "Random Forest": {
+      "MAE": 77781.65,
+      "RMSE": 127226.71,
+      "R2": 0.926197
+    },
+    "Gradient Boosting": {
+      "MAE": 89546.07,
+      "RMSE": 141392.92,
+      "R2": 0.908846
+    }
+  },
+  "selected_model": "Random Forest",
+  "selection_rule": "테스트 데이터 R²가 가장 높은 모델"
+}
