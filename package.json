@@ -1,7 +1,12 @@
 {
-  "name":"ai-car-price-prediction-web",
-  "version":"1.0.0",
-  "private":true,
-  "type":"module",
-  "dependencies":{"@supabase/supabase-js":"^2.49.1"}
+  "name": "ai-car-price-prediction-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1"
+  }
 }
