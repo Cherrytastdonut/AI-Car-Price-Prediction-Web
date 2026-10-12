@@ -1,0 +1,24 @@
+name: Export source dataset for modeling submission
+
+on:
+  push:
+    paths:
+      - ".github/workflows/export-source-data.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-dataset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload original Kaggle dataset archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-dataset-archive
+          path: archive.zip
+          retention-days: 7
