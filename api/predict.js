@@ -1,4 +1,5 @@
 import modelBundle from './model.js';
+import comparisonData from './comparison-data.js';
 
 function toNumber(value, fallback) {
   const n = Number(value);
@@ -67,6 +68,63 @@ function runModel(features) {
   }
 
   throw new Error('지원하지 않는 모델 형식입니다.');
+}
+
+
+function getPriceComparison(input, predictedPrice) {
+  // Use observed selling_price from the same deduplicated training source,
+  // not synthetic prices or predictions from the model.
+  const year = Number(input.year);
+  const km = Number(input.km_driven);
+  const fuel = comparisonData.fuels.indexOf(String(input.fuel));
+  const transmission = comparisonData.transmissions.indexOf(String(input.transmission));
+  const tiers = [
+    { year: 2, km: 30000, description: '연식 ±2년 · 주행거리 ±30,000km' },
+    { year: 3, km: 50000, description: '연식 ±3년 · 주행거리 ±50,000km' },
+    { year: 5, km: 80000, description: '연식 ±5년 · 주행거리 ±80,000km' },
+  ];
+
+  let average = null;
+  let count = 0;
+  let criteria = null;
+
+  if (Number.isFinite(year) && Number.isFinite(km) && fuel !== -1 && transmission !== -1) {
+    for (const tier of tiers) {
+      const matches = comparisonData.records.filter(
+        ([rowYear, rowKm, rowFuel, rowTransmission]) =>
+          rowFuel === fuel &&
+          rowTransmission === transmission &&
+          Math.abs(rowYear - year) <= tier.year &&
+          Math.abs(rowKm - km) <= tier.km
+      );
+      // Avoid presenting a very small sample as a meaningful cohort mean.
+      if (matches.length >= 10) {
+        count = matches.length;
+        average = Math.round(matches.reduce((total, row) => total + row[4], 0) / count);
+        criteria = tier.description + ' · 동일 연료·변속기';
+        break;
+      }
+    }
+  }
+
+  const overallAverage = comparisonData.overall_average;
+  const referenceAverage = average ?? overallAverage;
+  const difference = predictedPrice - referenceAverage;
+  const differencePct = referenceAverage > 0
+    ? Number((difference / referenceAverage * 100).toFixed(1))
+    : null;
+
+  return {
+    similar_average: average,
+    similar_count: count,
+    criteria,
+    overall_average: overallAverage,
+    dataset_count: comparisonData.row_count,
+    reference_type: average === null ? 'overall' : 'similar',
+    difference,
+    difference_percent: differencePct,
+    currency: 'INR',
+  };
 }
 
 async function getGeminiExplanation(input, predictedPrice) {
@@ -140,6 +198,7 @@ export default async function handler(req, res) {
       currency: modelBundle.currency,
       model: modelBundle.model_name,
       metrics: modelBundle.metrics,
+      comparison: getPriceComparison(input, predictedPrice),
       explanation,
     });
   } catch (error) {
