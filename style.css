@@ -46,6 +46,27 @@ nav a:hover,nav a.active{color:var(--blue);border-bottom-color:var(--blue)}
 .result-card{grid-column:1}
 .history-card{grid-column:2}
 .model-card{grid-column:1/-1}
+.comparison-card{grid-column:1/-1}
+.comparison-card[hidden],.comparison-chart-row[hidden]{display:none}
+.comparison-highlights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 24px}
+.comparison-highlight{display:grid;gap:6px;padding:20px;border:1px solid #e2eaf5;background:#f7faff;border-radius:16px}
+.comparison-highlight.my-car{background:#edf5ff;border-color:#bad5ff}
+.comparison-highlight small{color:#526680;font-size:13px;font-weight:800}
+.comparison-highlight strong{font-size:27px;font-weight:900;letter-spacing:-.025em;color:#193a66}
+.comparison-highlight.my-car strong{color:var(--blue)}
+.comparison-chart{display:grid;gap:16px;margin:12px 0 20px}
+.comparison-chart-row{display:grid;grid-template-columns:132px minmax(0,1fr) 120px;gap:16px;align-items:center}
+.comparison-chart-row>span{font-weight:800;font-size:13px;color:#465a73}
+.comparison-chart-row>b{color:#223b5e;text-align:right;font-size:13px}
+.comparison-track{height:20px;background:#eff3f8;border-radius:999px;overflow:hidden}
+.comparison-fill{height:100%;width:0;border-radius:999px;transition:width .55s ease}
+.comparison-fill.predicted{background:linear-gradient(90deg,#4fa2ff,#1769e0)}
+.comparison-fill.similar{background:linear-gradient(90deg,#38c5b3,#169789)}
+.comparison-fill.overall{background:linear-gradient(90deg,#a9b6c9,#7b8ca6)}
+.comparison-insight{padding:17px;border:1px solid #dbeaff;border-radius:14px;background:#f3f8ff}
+.comparison-insight strong{color:#165fc6;font-size:17px}
+.comparison-insight p{margin:7px 0 0;font-size:13px;line-height:1.7;color:#536880}
+.comparison-footnote{font-size:12px;color:#7b899d;line-height:1.7;margin:14px 0 0}
 .card-title{display:flex;gap:13px;align-items:center;margin-bottom:22px}
 .card-title.compact{margin-bottom:16px}
 .icon-box{width:43px;height:43px;border-radius:13px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-weight:900}
@@ -107,6 +128,12 @@ footer p{margin:0}
   .model-stats{grid-template-columns:1fr 1fr}
   .hero h1{font-size:38px}
   footer{flex-direction:column}
+}
+@media(max-width:640px){
+  .comparison-highlights{grid-template-columns:1fr}
+  .comparison-chart-row{grid-template-columns:1fr auto;gap:6px 12px}
+  .comparison-track{grid-column:1/-1;grid-row:2}
+  .comparison-highlight strong{font-size:24px}
 }
 @media(max-width:520px){
   .nav-wrap,.hero{width:92%}
