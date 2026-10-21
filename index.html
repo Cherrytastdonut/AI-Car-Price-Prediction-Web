@@ -155,6 +155,51 @@
           <div id="history" class="history-list">저장된 기록이 없습니다.</div>
         </section>
 
+        <section class="card comparison-card" id="comparison-section" hidden aria-live="polite">
+          <div class="card-title compact">
+            <span class="icon-box">↔</span>
+            <div>
+              <h2>내 차와 중고차 평균 가격 비교</h2>
+              <p>실제 CarDekho 판매가격 데이터와 AI 예측값을 함께 비교합니다.</p>
+            </div>
+          </div>
+
+          <div class="comparison-highlights">
+            <div class="comparison-highlight my-car">
+              <small>내 차 AI 예상 가격</small>
+              <strong id="comparisonMy">-</strong>
+            </div>
+            <div class="comparison-highlight">
+              <small id="comparisonReferenceLabel">유사 조건 차량 평균</small>
+              <strong id="comparisonReference">-</strong>
+            </div>
+          </div>
+
+          <div class="comparison-chart" id="comparisonChart" aria-label="중고차 가격 비교 막대그래프">
+            <div class="comparison-chart-row">
+              <span>내 차 예상 가격</span>
+              <div class="comparison-track"><div class="comparison-fill predicted" id="comparisonMyBar"></div></div>
+              <b id="comparisonMyChartPrice">-</b>
+            </div>
+            <div class="comparison-chart-row" id="comparisonSimilarRow">
+              <span>유사 조건 평균</span>
+              <div class="comparison-track"><div class="comparison-fill similar" id="comparisonSimilarBar"></div></div>
+              <b id="comparisonSimilarChartPrice">-</b>
+            </div>
+            <div class="comparison-chart-row">
+              <span>전체 중고차 평균</span>
+              <div class="comparison-track"><div class="comparison-fill overall" id="comparisonOverallBar"></div></div>
+              <b id="comparisonOverallChartPrice">-</b>
+            </div>
+          </div>
+
+          <div class="comparison-insight">
+            <strong id="comparisonDifference">-</strong>
+            <p id="comparisonBasis"></p>
+          </div>
+          <p class="comparison-footnote">인도 CarDekho 데이터(중복 제거 후 6,926건) 기준, 단위 INR(₹). 유사 조건은 연식·주행거리·연료·변속기로 선별하며, 같은 차종을 의미하지 않습니다. 실제 판매가격 및 국내 시세와 다를 수 있습니다.</p>
+        </section>
+
         <section class="card model-card" id="model-section">
           <div class="card-title compact">
             <span class="icon-box">AI</span>
