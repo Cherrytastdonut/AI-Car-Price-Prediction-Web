@@ -1,0 +1,34 @@
+name: Build real-price comparison data
+
+on:
+  push:
+    paths:
+      - "modeling/export_price_comparison.py"
+      - ".github/workflows/build-price-comparison.yml"
+      - "archive.zip"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-comparison-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Generate comparison data from original CSV
+        run: python modeling/export_price_comparison.py
+      - name: Commit real-data comparison module
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api/comparison-data.js
+          if git diff --cached --quiet; then
+            echo "No comparison data changes"
+          else
+            git commit -m "Generate real CarDekho comparison data [skip ci]"
+            git push
+          fi
