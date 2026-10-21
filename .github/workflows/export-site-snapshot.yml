@@ -1,0 +1,28 @@
+name: Export current website source for presentation screenshots
+
+on:
+  push:
+    paths:
+      - ".github/workflows/export-site-snapshot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pack current website source
+        run: |
+          mkdir -p site-snapshot/api
+          cp index.html style.css app.js package.json site-snapshot/
+          cp api/predict.js api/model.js api/comparison-data.js site-snapshot/api/
+          cp model/metrics.json site-snapshot/
+          echo "$GITHUB_SHA" > site-snapshot/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website-snapshot-source
+          path: site-snapshot/
+          retention-days: 5
