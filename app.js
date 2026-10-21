@@ -15,6 +15,74 @@ function payload() {
   };
 }
 
+
+function formatINR(value) {
+  return '₹ ' + Math.round(value).toLocaleString('en-IN');
+}
+
+function renderPriceComparison(comparison, predictedPrice) {
+  const section = $('#comparison-section');
+  if (!comparison || !Number.isFinite(Number(comparison.overall_average))) {
+    section.hidden = true;
+    return;
+  }
+
+  const overall = Number(comparison.overall_average);
+  const similar = comparison.similar_average == null
+    ? null
+    : Number(comparison.similar_average);
+  const hasSimilar = similar !== null && Number.isFinite(similar) && similar > 0;
+  const reference = hasSimilar ? similar : overall;
+  const diff = Number(predictedPrice) - reference;
+  const ratio = reference > 0 ? Math.abs(diff / reference * 100).toFixed(1) : '0.0';
+
+  $('#comparisonMy').textContent = formatINR(predictedPrice);
+  $('#comparisonReferenceLabel').textContent = hasSimilar
+    ? '유사 조건 차량 평균'
+    : '전체 중고차 평균';
+  $('#comparisonReference').textContent = formatINR(reference);
+
+  const prices = [Number(predictedPrice), overall];
+  if (hasSimilar) prices.push(similar);
+  const max = Math.max(1, ...prices);
+
+  const drawBar = (id, value) => {
+    $(id).style.width = (Math.max(0, value) / max * 100).toFixed(1) + '%';
+  };
+  drawBar('#comparisonMyBar', predictedPrice);
+  drawBar('#comparisonOverallBar', overall);
+  $('#comparisonMyChartPrice').textContent = formatINR(predictedPrice);
+  $('#comparisonOverallChartPrice').textContent = formatINR(overall);
+  $('#comparisonSimilarRow').hidden = !hasSimilar;
+
+  if (hasSimilar) {
+    drawBar('#comparisonSimilarBar', similar);
+    $('#comparisonSimilarChartPrice').textContent = formatINR(similar);
+  }
+
+  const basis = hasSimilar ? '유사 조건 차량 평균' : '전체 중고차 평균';
+  $('#comparisonDifference').textContent = Math.abs(diff) < 0.5
+    ? basis + '과 예상 가격이 같습니다.'
+    : basis + '보다 ' + formatINR(Math.abs(diff))
+      + ' (' + ratio + '%) ' + (diff > 0 ? '높습니다.' : '낮습니다.');
+
+  $('#comparisonBasis').textContent = hasSimilar
+    ? '비교 대상 ' + comparison.similar_count.toLocaleString('ko-KR')
+      + '대 · ' + comparison.criteria
+      + '. 입력한 차량과 비슷한 조건의 실제 데이터 평균입니다.'
+    : '비슷한 조건의 차량이 10대 미만이므로, 중복 제거한 전체 '
+      + comparison.dataset_count.toLocaleString('ko-KR')
+      + '대의 평균 가격만 비교합니다.';
+
+  $('#comparisonChart').setAttribute(
+    'aria-label',
+    '내 차 예상 가격 ' + formatINR(predictedPrice)
+      + ', ' + basis + ' ' + formatINR(reference)
+      + ', 전체 평균 ' + formatINR(overall)
+  );
+  section.hidden = false;
+}
+
 function setLoading(loading) {
   $('#predictBtn').disabled = loading;
   $('#predictBtnText').textContent = loading ? 'AI가 예측하는 중...' : '가격 예측하기';
@@ -41,6 +109,7 @@ async function predict() {
     };
 
     $('#price').textContent = data.display_price;
+    renderPriceComparison(data.comparison, data.predicted_price);
     $('#explanation').textContent =
       data.explanation || '머신러닝 모델 기반 예측 결과입니다.';
     $('#resultMeta').textContent =
@@ -126,6 +195,7 @@ function resetForm() {
   $('#seller_type').value = 'Individual';
   $('#owner').value = 'First Owner';
   $('#price').textContent = '-';
+  $('#comparison-section').hidden = true;
   $('#explanation').textContent =
     '가격 예측 후 차량 조건에 대한 설명을 확인할 수 있습니다.';
   $('#resultMeta').textContent = '차량 정보를 입력해 주세요.';
